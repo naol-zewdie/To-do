@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask To-Do List</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>My To-Do List</h1>
+      <p>Welcome to your Flask-powered task tracker.</p>
+      <form method="POST" class="task-form">
+        <input type="text" name="task" placeholder="Enter a new task" autocomplete="off">
+        <button type="submit">Add</button>
+      </form>
+      <ul class="tasks">
+        {% for task in tasks %}
+          <li class="task-item{% if task.completed %} completed{% endif %}">
+            <div class="task-content">
+              <label>
+                <input type="checkbox" {% if task.completed %}checked{% endif %} disabled>
+                {{ task.title }}
+              </label>
+            </div>
+            <div class="task-actions">
+              <a href="{{ url_for('complete_task', id=loop.index0) }}" class="action complete">
+                {% if task.completed %}Undo{% else %}Complete{% endif %}
+              </a>
+              <a href="{{ url_for('delete_task', id=loop.index0) }}" class="action delete">Delete</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="empty">No tasks yet. Add your first item.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
