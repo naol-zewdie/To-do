@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Edit Task</h1>
+      <form method="POST" class="task-form">
+        <input type="text" name="task" value="{{ task.title }}" required autocomplete="off">
+        <input type="date" name="due_date" value="{% if task.due_date %}{{ task.due_date }}{% endif %}">
+        <select name="priority">
+          <option value="High" {% if task.priority=='High' %}selected{% endif %}>High</option>
+          <option value="Medium" {% if task.priority=='Medium' %}selected{% endif %}>Medium</option>
+          <option value="Low" {% if task.priority=='Low' %}selected{% endif %}>Low</option>
+        </select>
+        <button type="submit">Save</button>
+        <a href="{{ url_for('home') }}" class="action cancel">Cancel</a>
+      </form>
+    </div>
+  </body>
+</html>

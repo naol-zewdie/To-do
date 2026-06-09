@@ -12,8 +12,23 @@
       <p>Welcome to your Flask-powered task tracker.</p>
       <form method="POST" class="task-form">
         <input type="text" name="task" placeholder="Enter a new task" autocomplete="off">
+        <input type="date" name="due_date">
+        <select name="priority">
+          <option value="High">High</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="Low">Low</option>
+        </select>
         <button type="submit">Add</button>
       </form>
+      <form method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search tasks" value="{{ search_query|default('') }}">
+        <button type="submit">Search</button>
+      </form>
+      <nav class="filters">
+        <a href="{{ url_for('home', filter='all') }}" class="{% if current_filter=='all' %}active{% endif %}">All</a>
+        <a href="{{ url_for('home', filter='pending') }}" class="{% if current_filter=='pending' %}active{% endif %}">Pending</a>
+        <a href="{{ url_for('home', filter='completed') }}" class="{% if current_filter=='completed' %}active{% endif %}">Completed</a>
+      </nav>
       <ul class="tasks">
         {% for task in tasks %}
           <li class="task-item{% if task.completed %} completed{% endif %}">
@@ -22,12 +37,17 @@
                 <input type="checkbox" {% if task.completed %}checked{% endif %} disabled>
                 {{ task.title }}
               </label>
+              {% if task.due_date %}
+                <small class="due">Due: {{ task.due_date.strftime('%Y-%m-%d') }}</small>
+              {% endif %}
+              <span class="priority-badge {{ task.priority|lower }}">{{ task.priority }}</span>
             </div>
             <div class="task-actions">
-              <a href="{{ url_for('complete_task', id=loop.index0) }}" class="action complete">
+              <a href="{{ url_for('complete_task', id=task.id) }}" class="action complete">
                 {% if task.completed %}Undo{% else %}Complete{% endif %}
               </a>
-              <a href="{{ url_for('delete_task', id=loop.index0) }}" class="action delete">Delete</a>
+                <a href="{{ url_for('edit_task', id=task.id) }}" class="action edit">Edit</a>
+                <a href="{{ url_for('delete_task', id=task.id) }}" class="action delete">Delete</a>
             </div>
           </li>
         {% else %}
